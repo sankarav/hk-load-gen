@@ -1,0 +1,20 @@
+database:
+  url: "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1"
+  username: "sa"
+  password: ""
+  driverClass: "org.h2.Driver"
+
+scenarios:
+  - name: "Insert Users"
+    query: "INSERT INTO users (id, name, email) VALUES (NEXT VALUE FOR seq_users, ?, ?)"
+    csvFile: "data.csv"
+    threads: 5
+    rampUpSeconds: 2
+    durationSeconds: 10
+  
+  - name: "Select Users"
+    query: "SELECT * FROM users WHERE name = ?"
+    csvFile: "data.csv"
+    threads: 10
+    rampUpSeconds: 2
+    durationSeconds: 10
