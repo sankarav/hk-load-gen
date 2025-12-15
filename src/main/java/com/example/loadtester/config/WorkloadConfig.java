@@ -18,8 +18,28 @@ public class WorkloadConfig {
 
     @Data
     public static class Scenario {
+        public enum Protocol {
+            JDBC, HTTP
+        }
+
         private String name;
-        private String query;
+        private Protocol type = Protocol.JDBC; // Default to JDBC for backward compat
+        private String target; // Replaces 'query', serves as SQL or URL
+
+        // HTTP specific
+        private String method = "GET";
+        private String body;
+
+        // Legacy setter to support 'query' in yaml for backward compatibility or ease
+        // of use
+        public void setQuery(String query) {
+            this.target = query;
+        }
+
+        public String getQuery() {
+            return target;
+        }
+
         private String csvFile;
         // private int threads; // Deprecated/Removed in favor of dynamic RPS
 

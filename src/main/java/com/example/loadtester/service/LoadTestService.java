@@ -46,35 +46,50 @@ public class LoadTestService {
     }
 
     private DslTestPlan buildTestPlan(WorkloadConfig config) {
-        WorkloadConfig.DatabaseConfig dbConfig = config.getDatabase();
-
-        String poolName = "JDBC_POOL";
-
-        // Define Database Pool
-        Class<? extends java.sql.Driver> driverClass;
-        try {
-            driverClass = (Class<? extends java.sql.Driver>) Class.forName(dbConfig.getDriverClass());
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Driver class not found: " + dbConfig.getDriverClass(), e);
-        }
-
-        var pool = jdbcConnectionPool(poolName, driverClass, dbConfig.getUrl())
-                .user(dbConfig.getUsername())
-                .password(dbConfig.getPassword());
 
         List<DslThreadGroup> threadGroups = new ArrayList<>();
+        List<TestPlanChild> testPlanChildren = new ArrayList<>();
+
+        String poolName = "JDBC_POOL";
+        boolean hasJdbc = config.getScenarios().stream()
+                .anyMatch(s -> s.getType() == WorkloadConfig.Scenario.Protocol.JDBC);
+
+        if (hasJdbc && config.getDatabase() != null) {
+            WorkloadConfig.DatabaseConfig dbConfig = config.getDatabase();
+            // Define Database Pool
+            Class<? extends java.sql.Driver> driverClass;
+            try {
+                driverClass = (Class<? extends java.sql.Driver>) Class.forName(dbConfig.getDriverClass());
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("Driver class not found: " + dbConfig.getDriverClass(), e);
+            }
+
+            var pool = jdbcConnectionPool(poolName, driverClass, dbConfig.getUrl())
+                    .user(dbConfig.getUsername())
+                    .password(dbConfig.getPassword());
+            testPlanChildren.add(pool);
+        }
 
         // Create Thread Group for each scenario
         for (WorkloadConfig.Scenario scenario : config.getScenarios()) {
-
-            var jdbcSampler = jdbcSampler(scenario.getName(), poolName, scenario.getQuery());
 
             // Define list of children for the thread group
             List<ThreadGroupChild> tgChildren = new ArrayList<>();
             if (scenario.getCsvFile() != null && !scenario.getCsvFile().isEmpty()) {
                 tgChildren.add(csvDataSet(scenario.getCsvFile()));
             }
-            tgChildren.add(jdbcSampler);
+
+            if (scenario.getType() == WorkloadConfig.Scenario.Protocol.JDBC) {
+                var jdbcSampler = jdbcSampler(scenario.getName(), poolName, scenario.getTarget());
+                tgChildren.add(jdbcSampler);
+            } else if (scenario.getType() == WorkloadConfig.Scenario.Protocol.HTTP) {
+                var httpSampler = httpSampler(scenario.getName(), scenario.getTarget())
+                        .method(scenario.getMethod());
+                if (scenario.getBody() != null) {
+                    httpSampler.body(scenario.getBody());
+                }
+                tgChildren.add(httpSampler);
+            }
 
             // Use RPS Thread Group
             var rpsTG = rpsThreadGroup(scenario.getName())
@@ -92,11 +107,9 @@ public class LoadTestService {
             threadGroups.add(rpsTG);
         }
 
-        List<TestPlanChild> children = new ArrayList<>();
-        children.add(pool);
-        children.addAll(threadGroups);
+        testPlanChildren.addAll(threadGroups);
 
         return testPlan(
-                children.toArray(new TestPlanChild[0]));
+                testPlanChildren.toArray(new TestPlanChild[0]));
     }
 }

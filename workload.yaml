@@ -6,17 +6,20 @@ database:
 
 scenarios:
   - name: "Insert Users"
-    query: "INSERT INTO users (id, name, email) VALUES (NEXT VALUE FOR seq_users, ?, ?)"
+    type: JDBC
+    target: "INSERT INTO users (id, name, email) VALUES (NEXT VALUE FOR seq_users, ?, ?)"
+    # legacy query field is also supported via setter
     csvFile: "data.csv"
     maxThreads: 50
     rampUpSeconds: 2
     stepDurationSeconds: 5
-    rpsSteps: [10, 20, 50, 10, 0]
+    rpsSteps: [10, 20, 10, 0]
   
-  - name: "Select Users"
-    query: "SELECT * FROM users WHERE name = ?"
-    csvFile: "data.csv"
-    maxThreads: 50
+  - name: "Get Example Dot Com"
+    type: HTTP
+    target: "https://example.com"
+    method: "GET"
+    maxThreads: 10
     rampUpSeconds: 2
     stepDurationSeconds: 5
-    rpsSteps: [20, 40, 80, 20, 0]
+    rpsSteps: [1, 5, 1, 0]
