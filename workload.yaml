@@ -8,13 +8,15 @@ scenarios:
   - name: "Insert Users"
     query: "INSERT INTO users (id, name, email) VALUES (NEXT VALUE FOR seq_users, ?, ?)"
     csvFile: "data.csv"
-    threads: 5
+    maxThreads: 50
     rampUpSeconds: 2
-    durationSeconds: 10
+    stepDurationSeconds: 5
+    rpsSteps: [10, 20, 50, 10, 0]
   
   - name: "Select Users"
     query: "SELECT * FROM users WHERE name = ?"
     csvFile: "data.csv"
-    threads: 10
+    maxThreads: 50
     rampUpSeconds: 2
-    durationSeconds: 10
+    stepDurationSeconds: 5
+    rpsSteps: [20, 40, 80, 20, 0]

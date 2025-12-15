@@ -21,8 +21,11 @@ public class WorkloadConfig {
         private String name;
         private String query;
         private String csvFile;
-        private int threads;
-        private int rampUpSeconds;
-        private int durationSeconds;
+        // private int threads; // Deprecated/Removed in favor of dynamic RPS
+
+        private int maxThreads = 50; // Default limit
+        private List<Double> rpsSteps; // List of target RPS values
+        private int rampUpSeconds = 5; // Ramp up time to reach each step
+        private int stepDurationSeconds = 10; // Duration to hold each step
     }
 }

@@ -76,11 +76,20 @@ public class LoadTestService {
             }
             tgChildren.add(jdbcSampler);
 
-            threadGroups.add(
-                    threadGroup(scenario.getName())
-                            .rampTo(scenario.getThreads(), Duration.ofSeconds(scenario.getRampUpSeconds()))
-                            .holdFor(Duration.ofSeconds(scenario.getDurationSeconds()))
-                            .children(tgChildren.toArray(new ThreadGroupChild[0])));
+            // Use RPS Thread Group
+            var rpsTG = rpsThreadGroup(scenario.getName())
+                    .maxThreads(scenario.getMaxThreads());
+
+            // Build the schedule
+            for (Double rps : scenario.getRpsSteps()) {
+                rpsTG.rampToAndHold(rps,
+                        Duration.ofSeconds(scenario.getRampUpSeconds()),
+                        Duration.ofSeconds(scenario.getStepDurationSeconds()));
+            }
+
+            rpsTG.children(tgChildren.toArray(new ThreadGroupChild[0]));
+
+            threadGroups.add(rpsTG);
         }
 
         List<TestPlanChild> children = new ArrayList<>();
