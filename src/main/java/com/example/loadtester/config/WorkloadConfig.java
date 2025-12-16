@@ -29,6 +29,7 @@ public class WorkloadConfig {
         // HTTP specific
         private String method = "GET";
         private String body;
+        private String contentType = "application/json";
 
         // Legacy setter to support 'query' in yaml for backward compatibility or ease
         // of use

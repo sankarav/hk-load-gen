@@ -18,6 +18,7 @@ import java.util.List;
 
 import static us.abstracta.jmeter.javadsl.JmeterDsl.*;
 import static us.abstracta.jmeter.javadsl.jdbc.JdbcJmeterDsl.*;
+import org.apache.http.entity.ContentType;
 
 @Service
 public class LoadTestService {
@@ -86,7 +87,8 @@ public class LoadTestService {
                 var httpSampler = httpSampler(scenario.getName(), scenario.getTarget())
                         .method(scenario.getMethod());
                 if (scenario.getBody() != null) {
-                    httpSampler.body(scenario.getBody());
+                    httpSampler.body(scenario.getBody())
+                            .contentType(ContentType.create(scenario.getContentType()));
                 }
                 tgChildren.add(httpSampler);
             }
