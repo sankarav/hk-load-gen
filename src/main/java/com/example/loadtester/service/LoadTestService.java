@@ -34,11 +34,34 @@ public class LoadTestService {
         System.out.println("Starting Load Test...");
         testPlan.saveAsJmx("debug.jmx");
         System.out.println("DEBUG: Saved test plan to debug.jmx");
-        TestPlanStats stats = testPlan.run();
 
-        System.out.println("Load Test Completed.");
-        System.out.println("Overall Stats: " + stats.overall().samplesCount() + " samples taken.");
-        System.out.println("99th Percentile: " + stats.overall().sampleTimePercentile99());
+        // Calculate estimated duration
+        long totalDurationSeconds = config.getScenarios().stream()
+                .mapToLong(s -> s.getRpsSteps().size() *
+                        (s.getRampUpSeconds() + s.getStepDurationSeconds()))
+                .max().orElse(60);
+
+        try {
+            java.util.concurrent.CompletableFuture<TestPlanStats> future = java.util.concurrent.CompletableFuture
+                    .supplyAsync(() -> {
+                        try {
+                            return testPlan.run();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+
+            // Add buffer to timeout
+            TestPlanStats stats = future.get(totalDurationSeconds + 30, java.util.concurrent.TimeUnit.SECONDS);
+
+            System.out.println("Load Test Completed.");
+            System.out.println("Overall Stats: " + stats.overall().samplesCount() + " samples taken.");
+            System.out.println("99th Percentile: " + stats.overall().sampleTimePercentile99());
+        } catch (java.util.concurrent.TimeoutException e) {
+            System.err.println("Load Test Timed Out! forcing exit.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private WorkloadConfig loadConfig(String path) throws IOException {
@@ -131,6 +154,8 @@ public class LoadTestService {
         }
 
         testPlanChildren.addAll(threadGroups);
+
+        testPlanChildren.add(htmlReporter("target/jmeter-report"));
 
         return testPlan(
                 testPlanChildren.toArray(new TestPlanChild[0]));

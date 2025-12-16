@@ -20,7 +20,7 @@ scenarios:
     maxThreads: 50
     rampUpSeconds: 2
     stepDurationSeconds: 5
-    rpsSteps: [10, 0]
+    rpsSteps: [10, 1]
   
   # - name: "Create User HTTP"
   #   type: HTTP

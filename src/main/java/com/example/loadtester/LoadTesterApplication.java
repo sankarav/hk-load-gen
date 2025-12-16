@@ -22,12 +22,14 @@ public class LoadTesterApplication implements CommandLineRunner {
         if (args.length > 0) {
             configPath = args[0];
         }
-        
+
         try {
             loadTestService.runTest(configPath);
         } catch (Exception e) {
             System.err.println("Error running load test: " + e.getMessage());
             e.printStackTrace();
+        } finally {
+            System.exit(0);
         }
     }
 }

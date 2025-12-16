@@ -61,14 +61,14 @@
               <stringProp name="1507361">10.0</stringProp>
               <stringProp name="53">5</stringProp>
             </collectionProp>
-            <collectionProp name="1450079424">
+            <collectionProp name="1450109215">
               <stringProp name="1507361">10.0</stringProp>
-              <stringProp name="47602">0.0</stringProp>
+              <stringProp name="48563">1.0</stringProp>
               <stringProp name="50">2</stringProp>
             </collectionProp>
-            <collectionProp name="47251028">
-              <stringProp name="47602">0.0</stringProp>
-              <stringProp name="47602">0.0</stringProp>
+            <collectionProp name="48204340">
+              <stringProp name="48563">1.0</stringProp>
+              <stringProp name="48563">1.0</stringProp>
               <stringProp name="53">5</stringProp>
             </collectionProp>
           </collectionProp>
@@ -113,6 +113,43 @@ SELECT id, name, email FROM users_another WHERE id = ?
         </JDBCSampler>
         <hashTree/>
       </hashTree>
+      <us.abstracta.jmeter.javadsl.core.listeners.HtmlReporter_-AutoFlushingResultCollector guiclass="SimpleDataWriter" testclass="us.abstracta.jmeter.javadsl.core.listeners.HtmlReporter$AutoFlushingResultCollector" testname="Simple Data Writer">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename">target/jmeter-report/2025-12-16 03-58-29 c8097324-bb9f-4b71-bfda-801388312e50/report.jtl</stringProp>
+      </us.abstracta.jmeter.javadsl.core.listeners.HtmlReporter_-AutoFlushingResultCollector>
+      <hashTree/>
     </hashTree>
   </hashTree>
 </jmeterTestPlan>
