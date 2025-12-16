@@ -32,6 +32,8 @@ public class LoadTestService {
 
         // 3. Run Test
         System.out.println("Starting Load Test...");
+        testPlan.saveAsJmx("debug.jmx");
+        System.out.println("DEBUG: Saved test plan to debug.jmx");
         TestPlanStats stats = testPlan.run();
 
         System.out.println("Load Test Completed.");
@@ -82,11 +84,25 @@ public class LoadTestService {
 
             if (scenario.getType() == WorkloadConfig.Scenario.Protocol.JDBC) {
                 var jdbcSampler = jdbcSampler(scenario.getName(), poolName, scenario.getTarget());
+                System.out.println("DEBUG: Configuring JDBC Sampler for: " + scenario.getName());
+                System.out.println("DEBUG: Query: [" + scenario.getTarget() + "]");
                 if (scenario.getParams() != null) {
+                    System.out.println("DEBUG: Found " + scenario.getParams().size() + " parameters.");
                     for (WorkloadConfig.Scenario.SqlParameter param : scenario.getParams()) {
-                        jdbcSampler.param(param.getValue(), getSqlType(param.getType()));
+                        System.out.println("DEBUG: Adding param: " + param.getValue() + " type: " + param.getType());
+                        jdbcSampler = jdbcSampler.param(param.getValue(), getSqlType(param.getType()));
                     }
+                } else {
+                    System.out.println("DEBUG: No parameters found.");
                 }
+
+                // DEBUG: Add a pre-processor to print variables
+                tgChildren.add(jsr223Sampler(s -> {
+                    System.out.println("RUNTIME DEBUG: id=" + s.vars.get("id"));
+                    System.out.println("RUNTIME DEBUG: name=" + s.vars.get("name"));
+                    System.out.println("RUNTIME DEBUG: email=" + s.vars.get("email"));
+                }));
+
                 tgChildren.add(jdbcSampler);
             } else if (scenario.getType() == WorkloadConfig.Scenario.Protocol.HTTP) {
                 var httpSampler = httpSampler(scenario.getName(), scenario.getTarget())
@@ -133,6 +149,8 @@ public class LoadTestService {
                 return java.sql.Types.DOUBLE;
             case "DECIMAL":
                 return java.sql.Types.DECIMAL;
+            case "NUMERIC":
+                return java.sql.Types.NUMERIC;
             case "BOOLEAN":
                 return java.sql.Types.BOOLEAN;
             case "DATE":

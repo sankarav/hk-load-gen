@@ -5,32 +5,35 @@ database:
   driverClass: "org.h2.Driver"
 
 scenarios:
-  - name: "Select Users JDBC"
+  - name: "Select Users JDBC union"
     type: JDBC
-    target: "SELECT id, name, email FROM users WHERE name = ? AND email = ?"
+    target: | 
+      SELECT id, name, email FROM users WHERE id = ?
+      UNION
+      SELECT id, name, email FROM users_another WHERE id = ?
     params: 
-      - value: "${name}"
-        type: VARCHAR
-      - value: "${email}"
-        type: VARCHAR
-    csvFile: "data.csv"
+      - value: "${id}"
+        type: DECIMAL
+      - value: "${id}"
+        type: DECIMAL
+    csvFile: "data_2.csv"
     maxThreads: 50
     rampUpSeconds: 2
     stepDurationSeconds: 5
     rpsSteps: [10, 0]
   
-  - name: "Create User HTTP"
-    type: HTTP
-    target: "http://localhost:8080/api/users" # Mock endpoint since we don't have a real one running on this port
-    method: "POST"
-    contentType: "application/json"
-    body: |
-      {
-        "name": "${name}",
-        "email": "${email}"
-      }
-    csvFile: "data.csv"
-    maxThreads: 10
-    rampUpSeconds: 2
-    stepDurationSeconds: 5
-    rpsSteps: [5, 0]
+  # - name: "Create User HTTP"
+  #   type: HTTP
+  #   target: "http://localhost:8080/api/users" # Mock endpoint since we don't have a real one running on this port
+  #   method: "POST"
+  #   contentType: "application/json"
+  #   body: |
+  #     {
+  #       "name": "${name}",
+  #       "email": "${email}"
+  #     }
+  #   csvFile: "data.csv"
+  #   maxThreads: 10
+  #   rampUpSeconds: 2
+  #   stepDurationSeconds: 5
+  #   rpsSteps: [5, 0]

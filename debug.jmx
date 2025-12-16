@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan">
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+    </TestPlan>
+    <hashTree>
+      <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="JDBC_POOL">
+        <boolProp name="autocommit">true</boolProp>
+        <org.apache.jmeter.testelement.property.NullProperty>
+          <name>checkQuery</name>
+        </org.apache.jmeter.testelement.property.NullProperty>
+        <org.apache.jmeter.testelement.property.NullProperty>
+          <name>connectionAge</name>
+        </org.apache.jmeter.testelement.property.NullProperty>
+        <org.apache.jmeter.testelement.property.NullProperty>
+          <name>connectionProperties</name>
+        </org.apache.jmeter.testelement.property.NullProperty>
+        <stringProp name="dataSource">JDBC_POOL</stringProp>
+        <stringProp name="dbUrl">jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1</stringProp>
+        <stringProp name="driver">org.h2.Driver</stringProp>
+        <org.apache.jmeter.testelement.property.NullProperty>
+          <name>initQuery</name>
+        </org.apache.jmeter.testelement.property.NullProperty>
+        <boolProp name="keepAlive">false</boolProp>
+        <stringProp name="password"></stringProp>
+        <stringProp name="poolMax">0</stringProp>
+        <org.apache.jmeter.testelement.property.NullProperty>
+          <name>poolPreparedStatements</name>
+        </org.apache.jmeter.testelement.property.NullProperty>
+        <boolProp name="preinit">true</boolProp>
+        <stringProp name="timeout">10000</stringProp>
+        <stringProp name="transactionIsolation">DEFAULT</stringProp>
+        <org.apache.jmeter.testelement.property.NullProperty>
+          <name>trimInterval</name>
+        </org.apache.jmeter.testelement.property.NullProperty>
+        <stringProp name="username">sa</stringProp>
+      </JDBCDataSource>
+      <hashTree/>
+      <us.abstracta.jmeter.javadsl.core.threadgroups.RpsThreadGroup_-ContractComplyingConcurrencyThreadGroup guiclass="com.blazemeter.jmeter.threads.concurrency.ConcurrencyThreadGroupGui" testclass="us.abstracta.jmeter.javadsl.core.threadgroups.RpsThreadGroup$ContractComplyingConcurrencyThreadGroup" testname="Select Users JDBC union">
+        <elementProp name="ThreadGroup.main_controller" elementType="com.blazemeter.jmeter.control.VirtualUserController"/>
+        <stringProp name="TargetLevel">${__tstFeedback(rpsTimer1,1,50,0.100000)}</stringProp>
+        <stringProp name="Hold">14</stringProp>
+        <stringProp name="Unit">S</stringProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+      </us.abstracta.jmeter.javadsl.core.threadgroups.RpsThreadGroup_-ContractComplyingConcurrencyThreadGroup>
+      <hashTree>
+        <us.abstracta.jmeter.javadsl.core.threadgroups.RpsThreadGroup_-NonInterruptingVariableThroughputTimer guiclass="kg.apc.jmeter.timers.VariableThroughputTimerGui" testclass="us.abstracta.jmeter.javadsl.core.threadgroups.RpsThreadGroup$NonInterruptingVariableThroughputTimer" testname="rpsTimer1">
+          <collectionProp name="load_profile">
+            <collectionProp name="93427075">
+              <stringProp name="48563">1.0</stringProp>
+              <stringProp name="1507361">10.0</stringProp>
+              <stringProp name="50">2</stringProp>
+            </collectionProp>
+            <collectionProp name="1495331956">
+              <stringProp name="1507361">10.0</stringProp>
+              <stringProp name="1507361">10.0</stringProp>
+              <stringProp name="53">5</stringProp>
+            </collectionProp>
+            <collectionProp name="1450079424">
+              <stringProp name="1507361">10.0</stringProp>
+              <stringProp name="47602">0.0</stringProp>
+              <stringProp name="50">2</stringProp>
+            </collectionProp>
+            <collectionProp name="47251028">
+              <stringProp name="47602">0.0</stringProp>
+              <stringProp name="47602">0.0</stringProp>
+              <stringProp name="53">5</stringProp>
+            </collectionProp>
+          </collectionProp>
+        </us.abstracta.jmeter.javadsl.core.threadgroups.RpsThreadGroup_-NonInterruptingVariableThroughputTimer>
+        <hashTree/>
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config">
+          <stringProp name="delimiter">,</stringProp>
+          <stringProp name="fileEncoding">UTF-8</stringProp>
+          <stringProp name="filename">data_2.csv</stringProp>
+          <boolProp name="ignoreFirstLine">false</boolProp>
+          <boolProp name="quotedData">true</boolProp>
+          <boolProp name="recycle">true</boolProp>
+          <stringProp name="shareMode">shareMode.all</stringProp>
+          <boolProp name="stopThread">false</boolProp>
+          <org.apache.jmeter.testelement.property.NullProperty>
+            <name>variableNames</name>
+          </org.apache.jmeter.testelement.property.NullProperty>
+        </CSVDataSet>
+        <hashTree/>
+        <us.abstracta.jmeter.javadsl.java.DslJsr223Sampler_-DslLambdaSampler guiclass="TestBeanGUI" testclass="us.abstracta.jmeter.javadsl.java.DslJsr223Sampler$DslLambdaSampler" testname="Lambda Sampler">
+          <stringProp name="TestPlan.comments">Check https://abstracta.github.io/jmeter-java-dsl/guide/#lambdas for instructions on how to run this element in remote engines (like BlazeMeter) or in JMeter standalone GUI.</stringProp>
+          <stringProp name="SCRIPT_ID">lambdaScript1</stringProp>
+          <stringProp name="scriptId">lambdaScript1</stringProp>
+        </us.abstracta.jmeter.javadsl.java.DslJsr223Sampler_-DslLambdaSampler>
+        <hashTree/>
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Select Users JDBC union">
+          <stringProp name="dataSource">JDBC_POOL</stringProp>
+          <stringProp name="query">SELECT id, name, email FROM users WHERE id = ?
+UNION
+SELECT id, name, email FROM users_another WHERE id = ?
+</stringProp>
+          <stringProp name="queryArguments">${id},${id}</stringProp>
+          <stringProp name="queryArgumentsTypes">decimal,decimal</stringProp>
+          <stringProp name="queryTimeout">-1</stringProp>
+          <stringProp name="queryType">Prepared Select Statement</stringProp>
+          <stringProp name="resultSetHandler">Store as String</stringProp>
+          <stringProp name="resultSetMaxRows"></stringProp>
+          <org.apache.jmeter.testelement.property.NullProperty>
+            <name>resultVariable</name>
+          </org.apache.jmeter.testelement.property.NullProperty>
+          <stringProp name="variableNames"></stringProp>
+        </JDBCSampler>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
