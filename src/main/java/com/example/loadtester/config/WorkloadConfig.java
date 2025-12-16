@@ -41,6 +41,7 @@ public class WorkloadConfig {
             return target;
         }
 
+        private List<String> params;
         private String csvFile;
         // private int threads; // Deprecated/Removed in favor of dynamic RPS
 

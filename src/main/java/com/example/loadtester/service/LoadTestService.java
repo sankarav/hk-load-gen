@@ -82,6 +82,11 @@ public class LoadTestService {
 
             if (scenario.getType() == WorkloadConfig.Scenario.Protocol.JDBC) {
                 var jdbcSampler = jdbcSampler(scenario.getName(), poolName, scenario.getTarget());
+                if (scenario.getParams() != null) {
+                    for (String param : scenario.getParams()) {
+                        jdbcSampler.param(param, java.sql.Types.VARCHAR);
+                    }
+                }
                 tgChildren.add(jdbcSampler);
             } else if (scenario.getType() == WorkloadConfig.Scenario.Protocol.HTTP) {
                 var httpSampler = httpSampler(scenario.getName(), scenario.getTarget())

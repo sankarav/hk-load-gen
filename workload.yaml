@@ -5,9 +5,12 @@ database:
   driverClass: "org.h2.Driver"
 
 scenarios:
-  - name: "Insert Users JDBC"
+  - name: "Select Users JDBC"
     type: JDBC
-    target: "INSERT INTO users (id, name, email) VALUES (NEXT VALUE FOR seq_users, ?, ?)"
+    target: "SELECT id, name, email FROM users WHERE name = ? AND email = ?"
+    params: 
+      - "${name}"
+      - "${email}"
     csvFile: "data.csv"
     maxThreads: 50
     rampUpSeconds: 2
