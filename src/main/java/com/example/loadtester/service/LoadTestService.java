@@ -149,6 +149,7 @@ public class LoadTestService {
             }
 
             rpsTG.children(tgChildren.toArray(new ThreadGroupChild[0]));
+            rpsTG.showInGui();
 
             threadGroups.add(rpsTG);
         }

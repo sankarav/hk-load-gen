@@ -3,7 +3,7 @@ package com.example.loadtester;
 import com.example.loadtester.service.LoadTestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
@@ -13,7 +13,9 @@ public class LoadTesterApplication implements CommandLineRunner {
     private LoadTestService loadTestService;
 
     public static void main(String[] args) {
-        SpringApplication.run(LoadTesterApplication.class, args);
+        new org.springframework.boot.builder.SpringApplicationBuilder(LoadTesterApplication.class)
+                .headless(false)
+                .run(args);
     }
 
     @Override
