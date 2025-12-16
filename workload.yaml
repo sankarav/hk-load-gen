@@ -9,8 +9,10 @@ scenarios:
     type: JDBC
     target: "SELECT id, name, email FROM users WHERE name = ? AND email = ?"
     params: 
-      - "${name}"
-      - "${email}"
+      - value: "${name}"
+        type: VARCHAR
+      - value: "${email}"
+        type: VARCHAR
     csvFile: "data.csv"
     maxThreads: 50
     rampUpSeconds: 2

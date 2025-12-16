@@ -41,8 +41,14 @@ public class WorkloadConfig {
             return target;
         }
 
-        private List<String> params;
+        private List<SqlParameter> params;
         private String csvFile;
+
+        @Data
+        public static class SqlParameter {
+            private String value;
+            private String type; // e.g. "VARCHAR", "INTEGER"
+        }
         // private int threads; // Deprecated/Removed in favor of dynamic RPS
 
         private int maxThreads = 50; // Default limit

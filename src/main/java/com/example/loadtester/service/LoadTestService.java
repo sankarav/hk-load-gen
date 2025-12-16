@@ -83,8 +83,8 @@ public class LoadTestService {
             if (scenario.getType() == WorkloadConfig.Scenario.Protocol.JDBC) {
                 var jdbcSampler = jdbcSampler(scenario.getName(), poolName, scenario.getTarget());
                 if (scenario.getParams() != null) {
-                    for (String param : scenario.getParams()) {
-                        jdbcSampler.param(param, java.sql.Types.VARCHAR);
+                    for (WorkloadConfig.Scenario.SqlParameter param : scenario.getParams()) {
+                        jdbcSampler.param(param.getValue(), getSqlType(param.getType()));
                     }
                 }
                 tgChildren.add(jdbcSampler);
@@ -118,5 +118,30 @@ public class LoadTestService {
 
         return testPlan(
                 testPlanChildren.toArray(new TestPlanChild[0]));
+    }
+
+    private int getSqlType(String type) {
+        if (type == null) {
+            return java.sql.Types.VARCHAR;
+        }
+        switch (type.toUpperCase()) {
+            case "INTEGER":
+                return java.sql.Types.INTEGER;
+            case "BIGINT":
+                return java.sql.Types.BIGINT;
+            case "DOUBLE":
+                return java.sql.Types.DOUBLE;
+            case "DECIMAL":
+                return java.sql.Types.DECIMAL;
+            case "BOOLEAN":
+                return java.sql.Types.BOOLEAN;
+            case "DATE":
+                return java.sql.Types.DATE;
+            case "TIMESTAMP":
+                return java.sql.Types.TIMESTAMP;
+            case "VARCHAR":
+            default:
+                return java.sql.Types.VARCHAR;
+        }
     }
 }
